@@ -1,14 +1,20 @@
 from homeassistant.helpers.entity import Entity
 
+from . import DOMAIN
+
 async def async_setup_entry(hass, entry, async_add_entities):
     coordinator = hass.data["ha_saveecobot"][entry.entry_id]["coordinator"]
     marker_id = entry.data["marker_id"]
     sensors = []
 
+
     # Use latest data from coordinator
     station_info = coordinator.data or {}
 
-        # Sensors for coordinates, type, AQI, last measurement time
+    # Determine device name for all sensors (address or marker_id)
+    device_name = station_info.get("sensor_name") or station_info.get("address") or str(marker_id)
+
+    # Sensors for coordinates, type, AQI, last measurement time
     sensors.append(SaveEcoBotSimpleSensor(
         marker_id, "longitude", station_info.get("longitude"), "Довгота", coordinator
     ))
@@ -25,14 +31,14 @@ async def async_setup_entry(hass, entry, async_add_entities):
         marker_id, "last_measurement_at", station_info.get("last_measurement_at"), "Час останнього вимірювання", coordinator
     ))
 
-        # Sensors for each phenomenon in last_data
+    # Sensors for each phenomenon in last_data
     for d in station_info.get("last_data", []):
         phenomenon = d["phenomenon"]
         value = d["value"]
         updated_at = d.get("updated_at")
         is_old = d.get("is_old")
         sensors.append(SaveEcoBotPhenomenonSensor(
-            marker_id, phenomenon, value, updated_at, is_old, coordinator
+            marker_id, device_name, phenomenon, value, updated_at, is_old, coordinator
         ))
 
     async_add_entities(sensors)
@@ -71,7 +77,7 @@ class SaveEcoBotSimpleSensor(Entity):
         await self._coordinator.async_request_refresh()
 
 class SaveEcoBotPhenomenonSensor(Entity):
-    def __init__(self, marker_id, phenomenon, value, updated_at, is_old, coordinator):
+    def __init__(self, marker_id, device_name, phenomenon, value, updated_at, is_old, coordinator):
         self._attr_unique_id = f"saveecobot_{marker_id}_{phenomenon}"
         self.entity_id = f"sensor.saveecobot_{marker_id}_{phenomenon}"
         self._attr_name = phenomenon
@@ -79,6 +85,16 @@ class SaveEcoBotPhenomenonSensor(Entity):
         self._coordinator = coordinator
         self._updated_at = updated_at
         self._is_old = is_old
+        self._device_name = device_name
+
+    @property
+    def device_info(self):
+        return {
+            "identifiers": {(DOMAIN, "saveecobot_device")},
+            "name": self._device_name,
+            "manufacturer": "SaveEcoBot",
+            "model": "Device",
+        }
 
     @property
     def name(self):

@@ -52,6 +52,15 @@ class SaveEcoBotSimpleSensor(Entity):
         self._key = key
         self._coordinator = coordinator
         self._extra_attrs = extra_attrs or {}
+        # Icon assignment for main sensors
+        icon_map = {
+            "longitude": "mdi:map-marker",
+            "latitude": "mdi:map-marker",
+            "type_name": "mdi:factory",
+            "aqi": "mdi:cloud",
+            "last_measurement_at": "mdi:clock-outline",
+        }
+        self._attr_icon = icon_map.get(key, "mdi:cloud-question")
 
     @property
     def name(self):
@@ -86,6 +95,31 @@ class SaveEcoBotPhenomenonSensor(Entity):
         self._updated_at = updated_at
         self._is_old = is_old
         self._device_name = device_name
+        # Icon assignment for phenomena
+        icon_map = {
+            "co_mg": "mdi:molecule-co",
+            "co_ppm": "mdi:molecule-co",
+            "gamma": "mdi:radioactive",
+            "h2s_ppb": "mdi:molecule",
+            "h2s_ug": "mdi:molecule",
+            "humidity": "mdi:water-percent",
+            "nh3_ppb": "mdi:cloud",
+            "nh3_ug": "mdi:cloud",
+            "no2_ppb": "mdi:cloud",
+            "no2_ug": "mdi:cloud",
+            "no_ppb": "mdi:cloud",
+            "no_ug": "mdi:cloud",
+            "o3_ppb": "mdi:cloud",
+            "o3_ug": "mdi:cloud",
+            "pm1": "mdi:blur",
+            "pm10": "mdi:blur",
+            "pm25": "mdi:blur",
+            "pressure_pa": "mdi:gauge",
+            "so2_ppb": "mdi:cloud",
+            "so2_ug": "mdi:cloud",
+            "temperature": "mdi:thermometer",
+        }
+        self._attr_icon = icon_map.get(phenomenon, "mdi:cloud-question")
 
     @property
     def device_info(self):

@@ -1,0 +1,51 @@
+{
+	"title": "SaveEcoBot Air Quality Station",
+	"config": {
+		"step": {
+			"user": {
+				"title": "Configure SaveEcoBot Station",
+				"description": "Enter the marker ID for your SaveEcoBot station.",
+				"data": {
+					"marker_id": "Marker ID"
+				}
+			}
+		},
+		"error": {
+			"cannot_connect": "Failed to connect to SaveEcoBot API.",
+			"invalid_marker": "Invalid marker ID.",
+			"unknown": "Unknown error occurred."
+		}
+	},
+	"options": {
+		"step": {
+			"init": {
+				"title": "SaveEcoBot Options",
+				"description": "Adjust sensor options for this station."
+			}
+		}
+	},
+	"entity": {
+		"sensor": {
+			"aqi": {
+				"name": "Air Quality Index",
+				"state": {
+					"good": "Good",
+					"moderate": "Moderate",
+					"unhealthy": "Unhealthy"
+				}
+			},
+			"last_measurement_at": {
+				"name": "Last Measurement Time"
+			},
+			"latitude": {
+				"name": "Latitude"
+			},
+			"longitude": {
+				"name": "Longitude"
+			},
+			"type": {
+				"name": "Station Type"
+			}
+		}
+	}
+}

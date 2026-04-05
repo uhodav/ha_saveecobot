@@ -1,0 +1,51 @@
+{
+	"title": "Станція SaveEcoBot (Якість повітря)",
+	"config": {
+		"step": {
+			"user": {
+				"title": "Налаштування станції SaveEcoBot",
+				"description": "Введіть marker ID вашої станції SaveEcoBot.",
+				"data": {
+					"marker_id": "ID маркера"
+				}
+			}
+		},
+		"error": {
+			"cannot_connect": "Не вдалося підключитися до API SaveEcoBot.",
+			"invalid_marker": "Невірний marker ID.",
+			"unknown": "Сталася невідома помилка."
+		}
+	},
+	"options": {
+		"step": {
+			"init": {
+				"title": "Опції SaveEcoBot",
+				"description": "Налаштуйте опції сенсорів для цієї станції."
+			}
+		}
+	},
+	"entity": {
+		"sensor": {
+			"aqi": {
+				"name": "Індекс якості повітря",
+				"state": {
+					"good": "Добре",
+					"moderate": "Помірно",
+					"unhealthy": "Небезпечно"
+				}
+			},
+			"last_measurement_at": {
+				"name": "Час останнього вимірювання"
+			},
+			"latitude": {
+				"name": "Широта"
+			},
+			"longitude": {
+				"name": "Довгота"
+			},
+			"type": {
+				"name": "Тип станції"
+			}
+		}
+	}
+}

@@ -5,14 +5,20 @@
 			"user": {
 				"title": "Configure SaveEcoBot Station",
 				"description": "Enter the marker ID for your SaveEcoBot station.",
-				"data": {
-					"marker_id": "Marker ID"
-				}
+        "data": {
+          "marker_id": "Monitoring Station ID",
+          "update_interval": "Update Interval (min)"
+        }
 			}
 		},
 		"error": {
+				"digits_only": "Only digits are allowed.",
 			"cannot_connect": "Failed to connect to SaveEcoBot API.",
 			"invalid_marker": "Invalid marker ID.",
+			"not_found": "Marker ID not found.",
+			"already_configured": "This monitoring station has already been added.",
+			"required": "This field is required.",
+			"invalid": "Invalid value.",
 			"unknown": "Unknown error occurred."
 		}
 	},
@@ -20,7 +26,11 @@
 		"step": {
 			"init": {
 				"title": "SaveEcoBot Options",
-				"description": "Adjust sensor options for this station."
+				"description": "Configure monitoring station options",
+        "data": {
+					"marker_id": "Monitoring Station ID",
+          "update_interval": "Update interval (min)"
+        }
 			}
 		}
 	},
@@ -46,27 +56,28 @@
 			"type": {
 				"name": "Station Type"
 			},
-			"co_mg": {"name": "Carbon Monoxide (mg/m³)"},
-			"co_ppm": {"name": "Carbon Monoxide (ppm)"},
-			"gamma": {"name": "Gamma Radiation"},
-			"h2s_ppb": {"name": "Hydrogen Sulfide (ppb)"},
-			"h2s_ug": {"name": "Hydrogen Sulfide (µg/m³)"},
-			"humidity": {"name": "Humidity"},
-			"nh3_ppb": {"name": "Ammonia (ppb)"},
-			"nh3_ug": {"name": "Ammonia (µg/m³)"},
-			"no2_ppb": {"name": "Nitrogen Dioxide (ppb)"},
-			"no2_ug": {"name": "Nitrogen Dioxide (µg/m³)"},
-			"no_ppb": {"name": "Nitrogen Oxide (ppb)"},
-			"no_ug": {"name": "Nitrogen Oxide (µg/m³)"},
-			"o3_ppb": {"name": "Ozone (ppb)"},
-			"o3_ug": {"name": "Ozone (µg/m³)"},
-			"pm1": {"name": "PM1.0"},
-			"pm10": {"name": "PM10"},
-			"pm25": {"name": "PM2.5"},
-			"pressure_pa": {"name": "Atmospheric Pressure"},
-			"so2_ppb": {"name": "Sulfur Dioxide (ppb)"},
-			"so2_ug": {"name": "Sulfur Dioxide (µg/m³)"},
-			"temperature": {"name": "Temperature"}
+      "type_name": {"name": "Station Name"},
+			"co_mg": {"name": "Carbon monoxide", "unit": "mg/m³"},
+			"co_ppm": {"name": "Carbon monoxide", "unit": "ppm"},
+			"gamma": {"name": "Gamma Radiation", "unit": "nSv/h"},
+			"h2s_ppb": {"name": "Hydrogen Sulfide", "unit": "ppb"},
+			"h2s_ug": {"name": "Hydrogen Sulfide", "unit": "µg/m³"},
+			"humidity": {"name": "Humidity", "unit": "%"},
+			"nh3_ppb": {"name": "Ammonia", "unit": "ppb"},
+			"nh3_ug": {"name": "Ammonia", "unit": "µg/m³"},
+			"no2_ppb": {"name": "Nitrogen Dioxide", "unit": "ppb"},
+			"no2_ug": {"name": "Nitrogen Dioxide", "unit": "µg/m³"},
+			"no_ppb": {"name": "Nitrogen Oxide", "unit": "ppb"},
+			"no_ug": {"name": "Nitrogen Oxide", "unit": "µg/m³"},
+			"o3_ppb": {"name": "Ozone", "unit": "ppb"},
+			"o3_ug": {"name": "Ozone", "unit": "µg/m³"},
+			"pm1": {"name": "PM1.0", "unit": "µg/m³"},
+			"pm10": {"name": "PM10", "unit": "µg/m³"},
+			"pm25": {"name": "PM2.5", "unit": "µg/m³"},
+			"pressure_pa": {"name": "Atmospheric Pressure", "unit": "Pa"},
+			"so2_ppb": {"name": "Sulfur Dioxide", "unit": "ppb"},
+			"so2_ug": {"name": "Sulfur Dioxide", "unit": "µg/m³"},
+			"temperature": {"name": "Temperature", "unit": "°C"}
 		}
 	}
 }

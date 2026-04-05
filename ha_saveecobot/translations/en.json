@@ -1,5 +1,5 @@
 {
-	"title": "SaveEcoBot Air Quality Station",
+	"title": "SaveEcoBot Air Quality",
 	"config": {
 		"step": {
 			"user": {
@@ -45,7 +45,28 @@
 			},
 			"type": {
 				"name": "Station Type"
-			}
+			},
+			"co_mg": {"name": "Carbon Monoxide (mg/m³)"},
+			"co_ppm": {"name": "Carbon Monoxide (ppm)"},
+			"gamma": {"name": "Gamma Radiation"},
+			"h2s_ppb": {"name": "Hydrogen Sulfide (ppb)"},
+			"h2s_ug": {"name": "Hydrogen Sulfide (µg/m³)"},
+			"humidity": {"name": "Humidity"},
+			"nh3_ppb": {"name": "Ammonia (ppb)"},
+			"nh3_ug": {"name": "Ammonia (µg/m³)"},
+			"no2_ppb": {"name": "Nitrogen Dioxide (ppb)"},
+			"no2_ug": {"name": "Nitrogen Dioxide (µg/m³)"},
+			"no_ppb": {"name": "Nitrogen Oxide (ppb)"},
+			"no_ug": {"name": "Nitrogen Oxide (µg/m³)"},
+			"o3_ppb": {"name": "Ozone (ppb)"},
+			"o3_ug": {"name": "Ozone (µg/m³)"},
+			"pm1": {"name": "PM1.0"},
+			"pm10": {"name": "PM10"},
+			"pm25": {"name": "PM2.5"},
+			"pressure_pa": {"name": "Atmospheric Pressure"},
+			"so2_ppb": {"name": "Sulfur Dioxide (ppb)"},
+			"so2_ug": {"name": "Sulfur Dioxide (µg/m³)"},
+			"temperature": {"name": "Temperature"}
 		}
 	}
 }

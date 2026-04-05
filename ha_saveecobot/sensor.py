@@ -75,19 +75,19 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
     # Sensors for coordinates, type, AQI, last measurement time
     sensors.append(SaveEcoBotSimpleSensor(
-        marker_id, device_name, "longitude", station_info.get("longitude"), "Довгота", coordinator
+        marker_id, device_name, "longitude", coordinator
     ))
     sensors.append(SaveEcoBotSimpleSensor(
-        marker_id, device_name, "latitude", station_info.get("latitude"), "Широта", coordinator
+        marker_id, device_name, "latitude", coordinator
     ))
     sensors.append(SaveEcoBotSimpleSensor(
-        marker_id, device_name, "type_name", station_info.get("type_name"), "Тип станції", coordinator
+        marker_id, device_name, "type_name", coordinator
     ))
     sensors.append(SaveEcoBotSimpleSensor(
-        marker_id, device_name, "aqi", station_info.get("aqi"), "AQI", coordinator, extra_attrs={"aqi_updated_at": station_info.get("aqi_updated_at")}
+        marker_id, device_name, "aqi", coordinator, extra_attrs={"aqi_updated_at": station_info.get("aqi_updated_at")}
     ))
     sensors.append(SaveEcoBotSimpleSensor(
-        marker_id, device_name, "last_measurement_at", station_info.get("last_measurement_at"), "Час останнього вимірювання", coordinator
+        marker_id, device_name, "last_measurement_at", coordinator
     ))
 
     # Sensors for each phenomenon in last_data
@@ -103,17 +103,17 @@ async def async_setup_entry(hass, entry, async_add_entities):
     async_add_entities(sensors)
 
 class SaveEcoBotSimpleSensor(Entity):
-    def __init__(self, marker_id, device_name, key, value, name, coordinator, extra_attrs=None):
+    def __init__(self, marker_id, device_name, key, coordinator, extra_attrs=None):
         self._param_id = f"{marker_id}_{key}"
         self._attr_unique_id = f"saveecobot_{self._param_id}"
         self.entity_id = f"sensor.saveecobot_{self._param_id}"
-        self._attr_name = name
-        self._key = key
+        self._phenomenon = key
         self._coordinator = coordinator
         self._extra_attrs = extra_attrs or {}
         self._attr_icon = PHENOMENON_ICONS.get(key, "mdi:cloud-question")
-        self._attr_unit_of_measurement = PHENOMENON_UNITS.get(key)
         self._device_name = device_name
+        self._attr_translation_key = key
+        self._attr_has_entity_name = True
 
     @property
     def device_info(self):
@@ -125,8 +125,8 @@ class SaveEcoBotSimpleSensor(Entity):
         }
     
     @property
-    def name(self):
-        return self._attr_name
+    def unit_of_measurement(self):
+        return PHENOMENON_UNITS.get(self._phenomenon)
 
     @property
     def unique_id(self):
@@ -136,8 +136,8 @@ class SaveEcoBotSimpleSensor(Entity):
     def state(self):
         # Always get latest value from coordinator
         data = self._coordinator.data or {}
-        if self._key in data:
-            return data[self._key]
+        if self._phenomenon in data:
+            return data[self._phenomenon]
         return None
 
     @property
@@ -147,19 +147,22 @@ class SaveEcoBotSimpleSensor(Entity):
     async def async_update(self):
         await self._coordinator.async_request_refresh()
 
+    async def async_added_to_hass(self) -> None:
+        await super().async_added_to_hass()
+
+
 class SaveEcoBotPhenomenonSensor(Entity):
     def __init__(self, marker_id, device_name, phenomenon, value, updated_at, is_old, coordinator):
         self._attr_unique_id = f"saveecobot_{marker_id}_{phenomenon}"
         self.entity_id = f"sensor.saveecobot_{marker_id}_{phenomenon}"
-        self._attr_name = phenomenon
         self._phenomenon = phenomenon
         self._coordinator = coordinator
         self._updated_at = updated_at
         self._is_old = is_old
         self._device_name = device_name
         self._attr_translation_key = phenomenon
+        self._attr_has_entity_name = True
         self._attr_icon = PHENOMENON_ICONS.get(phenomenon, "mdi:cloud-question")
-        self._attr_unit_of_measurement = PHENOMENON_UNITS.get(phenomenon)
 
     @property
     def device_info(self):
@@ -171,8 +174,8 @@ class SaveEcoBotPhenomenonSensor(Entity):
         }
 
     @property
-    def name(self):
-        return self._attr_name
+    def unit_of_measurement(self):
+        return PHENOMENON_UNITS.get(self._phenomenon)
 
     @property
     def unique_id(self):
@@ -201,3 +204,6 @@ class SaveEcoBotPhenomenonSensor(Entity):
 
     async def async_update(self):
         await self._coordinator.async_request_refresh()
+
+    async def async_added_to_hass(self) -> None:
+        await super().async_added_to_hass()

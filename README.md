@@ -18,6 +18,7 @@ Custom integration for monitoring SaveEcoBot air quality stations in Home Assist
 
 ### Features
 - **Config flow setup**: add the integration directly from the Home Assistant UI
+- **Dictionary-based setup wizard**: select `region → city → district (if available) → monitoring station`
 - **Localized UI**: English and Ukrainian translations for setup and entities
 - **Dynamic air-quality sensors**: AQI, PM, gases, temperature, humidity, pressure, and other available station data
 - **Stable entity IDs**: for example, `sensor.saveecobot_14634_aqi`
@@ -46,13 +47,30 @@ Custom integration for monitoring SaveEcoBot air quality stations in Home Assist
 1. Go to **Settings → Devices & Services**
 2. Click **Add Integration**
 3. Search for **SaveEcoBot**
-4. Enter your SaveEcoBot station `marker_id`
-5. Select the update interval
+4. Select a **region**
+5. Select a **city**
+6. Select a **district** (if available for the chosen city)
+7. Select a **monitoring station**
+8. Select the update interval
 
 ### Configuration
-- **Marker ID**: selected when the integration is created
+- **Region / City / District / Station**: selected in the setup wizard when creating the integration
 - **Update Interval**: selected during setup and later editable from the device Settings block
 - **Language**: taken from the Home Assistant user interface language
+
+### Reference dictionaries (regions/cities/districts/stations)
+
+The setup wizard uses prebuilt dictionaries stored in:
+
+- `ha_saveecobot/translations/en/*.json`
+- `ha_saveecobot/translations/uk/*.json`
+
+To refresh dictionaries from SaveEcoBot APIs, run:
+
+- English dictionaries: set `HA_UI_LANGUAGE=en` and run `scripts/generate_reference_dictionaries.ps1`
+- Ukrainian dictionaries: set `HA_UI_LANGUAGE=uk` and run `scripts/generate_reference_dictionaries.ps1`
+
+The script updates only new marker IDs and keeps existing data, so routine refreshes are incremental.
 
 After setup:
 - `update_interval` remains available as an editable slider in the device **Settings** block
@@ -125,7 +143,7 @@ title: Kyiv station
 
 ### Troubleshooting
 - Check **Settings → System → Logs** for `ha_saveecobot` entries
-- Ensure the selected `marker_id` exists on https://www.saveecobot.com/
+- If you don't see stations during setup, refresh reference dictionaries and retry
 - If the integration does not load, verify Internet access from Home Assistant
 - If data does not refresh, check the configured `update_interval` and Home Assistant logs
 - If entity names or IDs look stale after an upgrade, reload the integration or restart Home Assistant
@@ -140,6 +158,7 @@ title: Kyiv station
 
 ### Можливості
 - **Налаштування через config flow**: додавання інтеграції напряму з інтерфейсу Home Assistant
+- **Майстер налаштування на основі довідників**: вибір `область → місто → район (за наявності) → станція`
 - **Локалізований інтерфейс**: українська та англійська для налаштування й назв сутностей
 - **Динамічні сенсори якості повітря**: AQI, пил, гази, температура, вологість, тиск та інші доступні показники
 - **Стабільні entity_id**: наприклад, `sensor.saveecobot_14634_aqi`
@@ -168,13 +187,30 @@ title: Kyiv station
 1. Перейдіть у **Налаштування → Пристрої та служби**
 2. Натисніть **Додати інтеграцію**
 3. Знайдіть **SaveEcoBot**
-4. Введіть `marker_id` вашої станції SaveEcoBot
-5. Оберіть інтервал оновлення
+4. Оберіть **область**
+5. Оберіть **місто**
+6. Оберіть **район** (якщо доступний для вибраного міста)
+7. Оберіть **станцію моніторингу**
+8. Оберіть інтервал оновлення
 
 ### Налаштування
-- **Marker ID**: задається під час створення інтеграції
+- **Область / Місто / Район / Станція**: задаються в майстрі під час створення інтеграції
 - **Інтервал оновлення**: задається під час створення та потім може змінюватися у блоці налаштувань пристрою
 - **Мова**: береться з мови інтерфейсу Home Assistant
+
+### Довідники (області/міста/райони/станції)
+
+Майстер налаштування використовує попередньо згенеровані довідники у:
+
+- `ha_saveecobot/translations/en/*.json`
+- `ha_saveecobot/translations/uk/*.json`
+
+Щоб оновити довідники з API SaveEcoBot, запустіть:
+
+- Англійські довідники: встановіть `HA_UI_LANGUAGE=en` і запустіть `scripts/generate_reference_dictionaries.ps1`
+- Українські довідники: встановіть `HA_UI_LANGUAGE=uk` і запустіть `scripts/generate_reference_dictionaries.ps1`
+
+Скрипт оновлює лише нові marker ID і зберігає вже відомі дані, тому регулярні оновлення інкрементальні.
 
 Після створення інтеграції:
 - `update_interval` залишається доступним для редагування повзунком у блоці **Налаштування**
@@ -247,7 +283,7 @@ title: Київська станція
 
 ### Усунення несправностей
 - Перевірте **Налаштування → Система → Логи** на наявність записів `ha_saveecobot`
-- Переконайтеся, що вибраний `marker_id` існує на https://www.saveecobot.com/
+- Якщо під час налаштування не видно станцій, оновіть довідники й повторіть спробу
 - Якщо інтеграція не завантажується, перевірте доступ Home Assistant до Інтернету
 - Якщо дані не оновлюються, перевірте налаштований `update_interval` і логи Home Assistant
 - Якщо після оновлення назви або ключі сутностей виглядають застарілими, перезавантажте інтеграцію або Home Assistant

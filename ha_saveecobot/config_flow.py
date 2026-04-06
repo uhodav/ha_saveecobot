@@ -289,7 +289,7 @@ class HaSaveEcobotConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         city_selector = selector.SelectSelector(
             selector.SelectSelectorConfig(
                 options=city_options,
-                mode=selector.SelectSelectorMode.LIST,
+                mode=selector.SelectSelectorMode.DROPDOWN,
                 sort=False,
             )
         )
@@ -329,7 +329,7 @@ class HaSaveEcobotConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         district_selector = selector.SelectSelector(
             selector.SelectSelectorConfig(
                 options=district_options,
-                mode=selector.SelectSelectorMode.LIST,
+                mode=selector.SelectSelectorMode.DROPDOWN,
                 sort=False,
             )
         )
@@ -403,7 +403,7 @@ class HaSaveEcobotConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         marker_selector = selector.SelectSelector(
             selector.SelectSelectorConfig(
                 options=marker_options,
-                mode=selector.SelectSelectorMode.LIST,
+                mode=selector.SelectSelectorMode.DROPDOWN,
                 sort=False,
             )
         )

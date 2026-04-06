@@ -41,6 +41,18 @@ Custom integration for monitoring SaveEcoBot air quality stations in Home Assist
 - Example: `sensor.saveecobot_14634_aqi`, `sensor.saveecobot_14634_nh3_ppb`, etc.
 - Each sensor has unique_id and friendly name
 
+#### Example UI
+
+Below is an example of how SaveEcoBot sensors appear in the Home Assistant UI:
+
+![Sensors Example](images/sensors.png)
+
+- Each sensor displays its friendly name, value, and unit (localized)
+- Sensors are grouped by device (station)
+- All available air quality parameters are shown
+
+_See [translations/uk.json](./ha_saveecobot/translations/uk.json) and [translations/en.json](./ha_saveecobot/translations/en.json) for localization details._
+
 ### Troubleshooting
 - Check **Settings → System → Logs** for `ha_saveecobot` entries
 - Ensure your marker ID is correct and the station is online
@@ -75,9 +87,21 @@ Custom integration for monitoring SaveEcoBot air quality stations in Home Assist
 - **Мова**: мова інтерфейсу (автоматично визначається з профілю Home Assistant)
 
 ### Сенсори
-- Для всіх доступних параметрів якості повітря будуть створені сенсори
-- Приклад: `sensor.saveecobot_14634_aqi`, `sensor.saveecobot_14634_nh3_ppb` тощо
-- Кожен сенсор має унікальний ID та дружню назву
+Для всіх доступних параметрів якості повітря будуть створені сенсори
+Приклад: `sensor.saveecobot_14634_aqi`, `sensor.saveecobot_14634_nh3_ppb` тощо
+Кожен сенсор має унікальний ID та дружню назву
+
+#### Приклад інтерфейсу
+
+Нижче наведено приклад того, як виглядають сенсори SaveEcoBot в інтерфейсі Home Assistant:
+
+![Sensors Example](images/sensors.png)
+
+- Кожен сенсор відображає дружню назву, значення та одиницю вимірювання (локалізовано)
+- Сенсори згруповані за пристроєм (станцією)
+- Відображаються всі доступні параметри якості повітря
+
+_Деталі локалізації дивіться у [translations/uk.json](./ha_saveecobot/translations/uk.json) та [translations/en.json](./ha_saveecobot/translations/en.json)._ 
 
 ### Усунення несправностей
 - Перевірте **Налаштування → Система → Логи** на наявність записів `ha_saveecobot`

@@ -155,15 +155,7 @@ class SaveEcoBotCard extends HTMLElement {
     return entityId ? this._hass.states[entityId] : undefined;
   }
 
-  _aqiLevel(value, isOld = false) {
-    if (isOld) {
-      return {
-        color: AQI_STALE.color,
-        label: AQI_STALE.label[this._lang()] || AQI_STALE.label.en,
-        short: AQI_STALE.short[this._lang()] || AQI_STALE.short.en,
-        range: AQI_STALE.range[this._lang()] || AQI_STALE.range.en,
-      };
-    }
+  _aqiLevel(value) {
     const numeric = Number(value);
     if (!Number.isFinite(numeric)) {
       return {
@@ -267,7 +259,7 @@ class SaveEcoBotCard extends HTMLElement {
 
     const aqiValue = aqiState?.state;
     const isOld = Boolean(aqiState?.attributes?.is_old);
-    const level = this._aqiLevel(aqiValue, isOld);
+    const level = this._aqiLevel(aqiValue);
     const updatedAt = aqiState?.attributes?.updated_at;
 
     const statusText = isOld ? this._t("stale") : this._t("fresh");
@@ -297,10 +289,10 @@ class SaveEcoBotCard extends HTMLElement {
         </div>
 
         <div class="metrics">
-          ${this._metric(this._t("pm25"), this._formatState(pm25State), this._icons.dots, true)}
-          ${this._metric(this._t("pm10"), this._formatState(pm10State), this._icons.cloud, true)}
+          ${this._metric(this._t("pm25"), this._formatState(pm25State, 1), this._icons.dots, true)}
+          ${this._metric(this._t("pm10"), this._formatState(pm10State, 1), this._icons.cloud, true)}
           ${this._metric(this._t("temperature"), this._formatState(temperatureState, 1), this._icons.temp)}
-          ${this._metric(this._t("humidity"), this._formatState(humidityState), this._icons.humidity)}
+          ${this._metric(this._t("humidity"), this._formatState(humidityState, 1), this._icons.humidity)}
         </div>
       </div>
       ${this._styles()}

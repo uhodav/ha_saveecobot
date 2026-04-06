@@ -1,5 +1,6 @@
 from homeassistant.components.number import NumberEntity, NumberMode
 from homeassistant.helpers.entity import EntityCategory
+from datetime import timedelta
 
 from . import DOMAIN
 
@@ -62,4 +63,11 @@ class SaveEcoBotUpdateIntervalNumber(NumberEntity):
             self._config_entry,
             options={**self._config_entry.options, "update_interval": new_value},
         )
-        await self.hass.config_entries.async_reload(self._config_entry.entry_id)
+
+        coordinator_data = self.hass.data.get(DOMAIN, {}).get(self._config_entry.entry_id)
+        coordinator = coordinator_data.get("coordinator") if coordinator_data else None
+        if coordinator is not None:
+            coordinator.update_interval = timedelta(minutes=new_value)
+            await coordinator.async_request_refresh()
+
+        self.async_write_ha_state()

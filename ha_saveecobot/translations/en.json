@@ -35,6 +35,11 @@
 		}
 	},
 	"entity": {
+		"text": {
+			"marker_id": {
+				"name": "Monitoring Station ID"
+			}
+		},
 		"number": {
 			"update_interval": {
 				"name": "Update interval (min)"
@@ -54,6 +59,12 @@
 			},
 			"last_measurement_at": {
 				"name": "Last Measurement Time"
+			},
+			"current_marker_id": {
+				"name": "Marker ID"
+			},
+			"next_update_in": {
+				"name": "Next update in"
 			},
 			"latitude": {
 				"name": "Latitude"

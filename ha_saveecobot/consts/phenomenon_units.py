@@ -27,4 +27,5 @@ PHENOMENON_UNITS = {
     "type_name": None,
     "aqi": None,
     "last_measurement_at": None,
+    "next_update_in": None,
 }

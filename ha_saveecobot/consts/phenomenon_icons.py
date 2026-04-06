@@ -25,4 +25,5 @@ PHENOMENON_ICONS = {
     "type_name": "mdi:factory",
     "aqi": "mdi:cloud",
     "last_measurement_at": "mdi:clock-outline",
+    "next_update_in": "mdi:timeline-clock-outline",
 }

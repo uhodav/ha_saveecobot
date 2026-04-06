@@ -7,6 +7,7 @@ from homeassistant.components.http import StaticPathConfig
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr, entity_registry as er
+from homeassistant.util import dt as dt_util
 
 DOMAIN = "ha_saveecobot"
 _LOGGER = logging.getLogger(__name__)
@@ -29,7 +30,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.data[DOMAIN][FRONTEND_KEY] = True
 
     # Setup DataUpdateCoordinator for periodic updates
-    update_interval = entry.options.get("update_interval", entry.data.get("update_interval", 5))
+    update_interval = int(entry.options.get("update_interval", entry.data.get("update_interval", 5)))
+    if update_interval < 1:
+        update_interval = 1
     marker_id = entry.data["marker_id"]
 
     async def async_update_data():
@@ -39,6 +42,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 async with session.get(url, timeout=15) as resp:
                     data = await resp.json()
                     if "id" in data and "sensor_name" in data:
+                        now = dt_util.utcnow()
+                        runtime = hass.data.get(DOMAIN, {}).get(entry.entry_id)
+                        if runtime is not None:
+                            runtime["last_refresh_at"] = now
+                        _LOGGER.debug(
+                            "ha_saveecobot: Fetched station %s successfully at %s (interval=%s)",
+                            marker_id,
+                            now.isoformat(),
+                            coordinator.update_interval,
+                        )
                         return data
                     raise UpdateFailed("Invalid data from SaveEcoBot API")
         except Exception as err:
@@ -52,17 +65,46 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         update_interval=timedelta(minutes=update_interval),
     )
 
-    # Initial fetch
-    await coordinator.async_config_entry_first_refresh()
-
     hass.data[DOMAIN][entry.entry_id] = {
         "coordinator": coordinator,
         "config": entry.data,
+        "last_refresh_at": None,
+        "coordinator_keepalive_unsub": None,
     }
+
+    # Keep coordinator periodic updates active even if no CoordinatorEntity
+    # listeners are currently registered (e.g. platform startup glitches,
+    # temporarily disabled entities).
+    hass.data[DOMAIN][entry.entry_id]["coordinator_keepalive_unsub"] = coordinator.async_add_listener(
+        lambda: None
+    )
+
+    # Initial fetch
+    await coordinator.async_config_entry_first_refresh()
+
+    entry.async_on_unload(entry.add_update_listener(_async_options_updated))
 
     await _cleanup_old_entities(hass, entry)
     await hass.config_entries.async_forward_entry_setups(entry, ["sensor", "number", "binary_sensor", "button"])
     return True
+
+
+async def _async_options_updated(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Apply updated options (including update_interval) to a running coordinator."""
+    coordinator_data = hass.data.get(DOMAIN, {}).get(entry.entry_id)
+    if not coordinator_data:
+        return
+
+    coordinator = coordinator_data.get("coordinator")
+    if coordinator is None:
+        return
+
+    new_interval = int(entry.options.get("update_interval", entry.data.get("update_interval", 5)))
+    if new_interval < 1:
+        new_interval = 1
+
+    coordinator.update_interval = timedelta(minutes=new_interval)
+    await coordinator.async_request_refresh()
 
 
 async def _cleanup_old_entities(
@@ -93,6 +135,17 @@ async def _cleanup_old_entities(
         }
         for entity_entry in entities:
             if (
+                entity_entry.domain == "text"
+                and entity_entry.unique_id == f"saveecobot_{marker_id}_marker_id"
+            ):
+                entity_registry.async_remove(entity_entry.entity_id)
+                removed_count += 1
+                _LOGGER.info(
+                    "ha_saveecobot: Removed legacy marker_id text entity %s",
+                    entity_entry.entity_id,
+                )
+
+            if (
                 entity_entry.domain == "sensor"
                 and entity_entry.unique_id == f"saveecobot_{marker_id}_update_interval"
             ):
@@ -101,6 +154,26 @@ async def _cleanup_old_entities(
                 _LOGGER.info(
                     "ha_saveecobot: Removed deprecated sensor entity %s",
                     entity_entry.entity_id,
+                )
+
+            expected_sensor_entity_id = None
+            if (
+                entity_entry.domain == "sensor"
+                and entity_entry.unique_id
+                and entity_entry.unique_id.startswith(f"saveecobot_{marker_id}_")
+            ):
+                expected_sensor_entity_id = f"sensor.{entity_entry.unique_id}"
+
+            if (
+                expected_sensor_entity_id is not None
+                and entity_entry.entity_id != expected_sensor_entity_id
+            ):
+                entity_registry.async_remove(entity_entry.entity_id)
+                removed_count += 1
+                _LOGGER.info(
+                    "ha_saveecobot: Removed renamed sensor entity %s to restore %s",
+                    entity_entry.entity_id,
+                    expected_sensor_entity_id,
                 )
 
             expected_entity_id = deprecated_number_entities.get(entity_entry.unique_id)
@@ -147,6 +220,12 @@ async def _cleanup_old_entities(
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
+    runtime = hass.data.get(DOMAIN, {}).get(entry.entry_id)
+    if runtime:
+        keepalive_unsub = runtime.get("coordinator_keepalive_unsub")
+        if keepalive_unsub is not None:
+            keepalive_unsub()
+
     unload_ok = await hass.config_entries.async_unload_platforms(entry, ["sensor", "number", "binary_sensor", "button"])
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id)

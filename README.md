@@ -23,9 +23,11 @@ Custom integration for monitoring SaveEcoBot air quality stations in Home Assist
 - **Stable entity IDs**: for example, `sensor.saveecobot_14634_aqi`
 - **Device grouping**: all entities for the selected station are grouped under one device
 - **Custom Lovelace card**: bundled station overview card with AQI, PM2.5, PM10, temperature, humidity, `updated_at`, and stale-data status
-- **Settings entities inside the device**:
-	- `marker_id` is shown as a read-only value in **Settings**
+- **Device settings**:
 	- `update_interval` is available as an editable slider in **Settings**
+- **Diagnostics**:
+	- `marker_id` is shown as a read-only sensor
+	- timer/debug sensors: `configured_interval_min`, `current_interval_min`, `next_update_in`
 - **Automatic polling**: update interval from 1 to 60 minutes
 
 ### Installation
@@ -53,8 +55,9 @@ Custom integration for monitoring SaveEcoBot air quality stations in Home Assist
 - **Language**: taken from the Home Assistant user interface language
 
 After setup:
-- `marker_id` is displayed in the device **Settings** block as a read-only value
-- `update_interval` remains available as an editable slider in the same block
+- `update_interval` remains available as an editable slider in the device **Settings** block
+- `marker_id` is available as a read-only diagnostic sensor
+- timer/debug values are available as separate diagnostic sensors (`configured_interval_min`, `current_interval_min`, `next_update_in`)
 - there is no separate options dialog for routine changes
 
 ### Sensors
@@ -81,6 +84,8 @@ _See [translations/uk.json](./ha_saveecobot/translations/uk.json) and [translati
 ### Custom Lovelace card
 
 The integration includes a bundled Lovelace card that highlights the most important air-quality data with color-coded AQI levels.
+
+![SaveEcoBot Card](images/card.png)
 
 #### What it shows
 - AQI
@@ -140,9 +145,11 @@ title: Kyiv station
 - **Стабільні entity_id**: наприклад, `sensor.saveecobot_14634_aqi`
 - **Групування за пристроєм**: усі сутності станції зібрані під одним пристроєм
 - **Кастомна Lovelace-картка**: оглядова картка станції з AQI, PM2.5, PM10, температурою, вологістю, `updated_at` та статусом застарілих даних
-- **Сутності налаштувань у блоці `Налаштування`**:
-	- `marker_id` показується як текстове значення без редагування
-	- `update_interval` доступний для зміни через повзунок
+- **Налаштування пристрою**:
+	- `update_interval` доступний для зміни через повзунок у блоці `Налаштування`
+- **Діагностика**:
+	- `marker_id` відображається як сенсор лише для читання
+	- таймери/відладка: `configured_interval_min`, `current_interval_min`, `next_update_in`
 - **Автоматичне опитування**: інтервал від 1 до 60 хвилин
 
 ### Встановлення
@@ -170,8 +177,9 @@ title: Kyiv station
 - **Мова**: береться з мови інтерфейсу Home Assistant
 
 Після створення інтеграції:
-- `marker_id` відображається в блоці **Налаштування** як значення лише для перегляду
-- `update_interval` залишається доступним для редагування повзунком у тому ж блоці
+- `update_interval` залишається доступним для редагування повзунком у блоці **Налаштування**
+- `marker_id` доступний як діагностичний сенсор лише для перегляду
+- таймерні/відладочні значення доступні окремими діагностичними сенсорами (`configured_interval_min`, `current_interval_min`, `next_update_in`)
 - окреме вікно опцій для щоденних змін не використовується
 
 ### Сенсори
@@ -198,6 +206,8 @@ _Деталі локалізації дивіться у [translations/uk.json](
 ### Кастомна Lovelace-картка
 
 Інтеграція містить вбудовану Lovelace-картку, яка показує головні показники якості повітря з кольоровою індикацією рівня забруднення.
+
+![Картка SaveEcoBot](images/card.png)
 
 #### Що відображається
 - AQI

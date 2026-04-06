@@ -26,6 +26,7 @@ class HaSaveEcobotConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     @staticmethod
     def build_entry(marker_id, update_interval, station_info):
+        update_interval = int(update_interval)
         city = station_info.get("city_name", "") if station_info else ""
         address = station_info.get("sensor_name", "") if station_info else ""
         title = f"{city} {address}".strip() or str(marker_id)
@@ -43,7 +44,7 @@ class HaSaveEcobotConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
         if user_input is not None:
             marker_id = str(user_input.get("marker_id", "")).strip()
-            update_interval = user_input.get("update_interval", 5)
+            update_interval = int(user_input.get("update_interval", 5))
             existing_ids = [entry.data.get("marker_id") for entry in self._async_current_entries()]
             if not marker_id:
                 errors["marker_id"] = "required"

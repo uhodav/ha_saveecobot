@@ -35,6 +35,11 @@
 		}
 	},
 	"entity": {
+		"text": {
+			"marker_id": {
+				"name": "Номер станції моніторингу"
+			}
+		},
 		"number": {
 			"update_interval": {
 				"name": "Інтервал опитування (хв)"
@@ -54,6 +59,12 @@
 			},
 			"last_measurement_at": {
 				"name": "Час останнього вимірювання"
+			},
+			"current_marker_id": {
+				"name": "Marker ID"
+			},
+			"next_update_in": {
+				"name": "До наступного оновлення"
 			},
 			"latitude": {
 				"name": "Широта"

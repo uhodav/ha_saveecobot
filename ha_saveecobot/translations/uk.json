@@ -3,17 +3,39 @@
 	"config": {
 		"step": {
 			"user": {
-				"title": "Налаштування станції SaveEcoBot",
-				"description": "Введіть marker ID вашої станції SaveEcoBot.",
+				"title": "Крок 1/4: Вибір області",
+				"description": "Оберіть область зі списку. Наявність станції можна перевірити на карті SaveEcoBot: https://www.saveecobot.com/maps/",
         "data": {
-					"marker_id": "Номер станції моніторингу",
-          "update_interval": "Інтервал опитування (хв)"
+					"region_id": "Область"
         }
+			},
+			"city": {
+				"title": "Крок 2/4: Вибір міста",
+				"description": "Оберіть місто для вибраної області.",
+				"data": {
+					"city_id": "Місто"
+				}
+			},
+			"district": {
+				"title": "Крок 3/4: Вибір району",
+				"description": "Оберіть район для вибраного міста.",
+				"data": {
+					"district_id": "Район"
+				}
+			},
+			"marker": {
+				"title": "Крок 4/4: Вибір станції моніторингу",
+				"description": "Оберіть станцію зі списку та задайте інтервал оновлення.",
+				"data": {
+					"marker_id": "Станція моніторингу",
+					"update_interval": "Інтервал опитування (хв)"
+				}
 			}
 		},
 		"error": {
 				"digits_only": "Дозволені лише цифри.",
 			"cannot_connect": "Не вдалося підключитися до API SaveEcoBot.",
+			"no_options": "Для цього кроку немає доступних варіантів.",
 			"invalid_marker": "Невірний marker ID.",
 			"not_found": "Marker ID не знайдено.",
 			"already_configured": "Цю станцію моніторингу вже додано.",
@@ -26,7 +48,7 @@
 		"step": {
 			"init": {
 				"title": "Опції SaveEcoBot",
-				"description": "Налаштуйте опції станції моніторингу",
+				"description": "Налаштуйте опції станції моніторингу.",
         "data": {
 					"marker_id": "Номер станції моніторингу",
           "update_interval": "Інтервал опитування (хв)"

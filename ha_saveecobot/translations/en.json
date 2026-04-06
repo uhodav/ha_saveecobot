@@ -3,17 +3,39 @@
 	"config": {
 		"step": {
 			"user": {
-				"title": "Configure SaveEcoBot Station",
-				"description": "Enter the marker ID for your SaveEcoBot station.",
+				"title": "Step 1/4: Select Region",
+				"description": "Select a region from the list. You can verify station availability on the SaveEcoBot map: https://www.saveecobot.com/en/maps",
         "data": {
-          "marker_id": "Monitoring Station ID",
-          "update_interval": "Update Interval (min)"
+          "region_id": "Region"
         }
+			},
+			"city": {
+				"title": "Step 2/4: Select City",
+				"description": "Select a city for the chosen region.",
+				"data": {
+					"city_id": "City"
+				}
+			},
+			"district": {
+				"title": "Step 3/4: Select District",
+				"description": "Select a district for the chosen city.",
+				"data": {
+					"district_id": "District"
+				}
+			},
+			"marker": {
+				"title": "Step 4/4: Select Monitoring Station",
+				"description": "Select a station from the list and set an update interval.",
+				"data": {
+					"marker_id": "Monitoring Station",
+					"update_interval": "Update Interval (min)"
+				}
 			}
 		},
 		"error": {
 				"digits_only": "Only digits are allowed.",
 			"cannot_connect": "Failed to connect to SaveEcoBot API.",
+			"no_options": "No options available for this step.",
 			"invalid_marker": "Invalid marker ID.",
 			"not_found": "Marker ID not found.",
 			"already_configured": "This monitoring station has already been added.",
@@ -26,7 +48,7 @@
 		"step": {
 			"init": {
 				"title": "SaveEcoBot Options",
-				"description": "Configure monitoring station options",
+				"description": "Configure monitoring station options.",
         "data": {
 					"marker_id": "Monitoring Station ID",
           "update_interval": "Update interval (min)"

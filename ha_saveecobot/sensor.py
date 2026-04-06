@@ -1,10 +1,19 @@
 from homeassistant.helpers.entity import EntityCategory
-from .consts.phenomenon_units import PHENOMENON_UNITS
-from .consts.phenomenon_icons import PHENOMENON_ICONS
-
-from homeassistant.components.sensor import Entity
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.components.sensor import SensorEntity
 
 from . import DOMAIN
+from .consts.phenomenon_icons import PHENOMENON_ICONS
+from .consts.phenomenon_units import PHENOMENON_UNITS
+
+
+def _build_device_info(marker_id, device_name):
+    return {
+        "identifiers": {(DOMAIN, str(marker_id))},
+        "name": device_name,
+        "manufacturer": "SaveEcoBot",
+        "model": "Device",
+    }
 
 async def async_setup_entry(hass, entry, async_add_entities):
     coordinator = hass.data["ha_saveecobot"][entry.entry_id]["coordinator"]
@@ -18,7 +27,11 @@ async def async_setup_entry(hass, entry, async_add_entities):
     # Determine device name for all sensors (address or marker_id)
     device_name = station_info.get("sensor_name") or station_info.get("address") or str(marker_id)
 
-    # Sensors for coordinates, type, AQI, last measurement time
+    sensors.append(SaveEcoBotConfigValueSensor(
+        marker_id, device_name, "marker_id", entry.data.get("marker_id"), "mdi:identifier"
+    ))
+
+    # Sensors for coordinates, type, AQI
     sensors.append(SaveEcoBotSensor(
         marker_id, device_name, "longitude", coordinator, is_phenomenon=False
     ))
@@ -35,9 +48,6 @@ async def async_setup_entry(hass, entry, async_add_entities):
               "is_old": station_info.get("aqi_is_old")
               }
     ))
-    sensors.append(SaveEcoBotSensor(
-        marker_id, device_name, "last_measurement_at", coordinator, is_phenomenon=False
-    ))
 
     # Sensors for each phenomenon in last_data
     for d in station_info.get("last_data", []):
@@ -48,10 +58,31 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
     async_add_entities(sensors)
 
-class SaveEcoBotSensor(Entity):
+
+class SaveEcoBotConfigValueSensor(SensorEntity):
+    def __init__(self, marker_id, device_name, key, value, icon):
+        self._marker_id = marker_id
+        self._device_name = device_name
+        self._value = value
+        self._attr_unique_id = f"saveecobot_{marker_id}_{key}"
+        self._attr_translation_key = key
+        self._attr_has_entity_name = True
+        self._attr_entity_category = EntityCategory.CONFIG
+        self._attr_icon = icon
+
+    @property
+    def device_info(self):
+        return _build_device_info(self._marker_id, self._device_name)
+
+    @property
+    def native_value(self):
+        return self._value
+
+class SaveEcoBotSensor(CoordinatorEntity, SensorEntity):
     def __init__(self, marker_id, device_name, key, coordinator, *, is_phenomenon=True, extra_attrs=None):
+        super().__init__(coordinator)
+        self._marker_id = marker_id
         self._phenomenon = key
-        self._coordinator = coordinator
         self._device_name = device_name
         self._attr_translation_key = key
         self._attr_has_entity_name = True
@@ -59,11 +90,15 @@ class SaveEcoBotSensor(Entity):
         self._translations = None
         self._is_phenomenon = is_phenomenon
         self._extra_attrs = extra_attrs or {}
-        self.entity_id = f"sensor.saveecobot_{marker_id}_{key}"
         self._attr_unique_id = f"saveecobot_{marker_id}_{key}"
+        self._attr_native_unit_of_measurement = PHENOMENON_UNITS.get(key)
         self._param_id = f"{marker_id}_{key}"
 
-        if not is_phenomenon:
+        if key == "aqi":
+            self._attr_state_class = "measurement"
+            self._attr_suggested_display_precision = 0
+
+        if not is_phenomenon and key != "aqi":
             self._attr_entity_category = EntityCategory.DIAGNOSTIC
 
         if key == "pressure_pa":
@@ -75,12 +110,7 @@ class SaveEcoBotSensor(Entity):
 
     @property
     def device_info(self):
-        return {
-            "identifiers": {(DOMAIN)},
-            "name": self._device_name,
-            "manufacturer": "SaveEcoBot",
-            "model": "Device",
-        }
+        return _build_device_info(self._marker_id, self._device_name)
 
     @property
     def unit_of_measurement(self):
@@ -95,25 +125,35 @@ class SaveEcoBotSensor(Entity):
         return self._attr_unique_id
 
     @property
-    def state(self):
-        data = self._coordinator.data or {}
+    def native_value(self):
+        data = self.coordinator.data or {}
         if self._is_phenomenon:
             for d in data.get("last_data", []):
                 if d["phenomenon"] == self._phenomenon:
                     if self._phenomenon == "pressure_pa" and d["value"] is not None:
                         return round(d["value"] / 1000, 1)
+                    if self._phenomenon == "aqi" and d["value"] is not None:
+                        try:
+                            return int(d["value"])
+                        except Exception:
+                            return d["value"]
                     return d["value"]
             return None
         else:
             val = data.get(self._phenomenon)
             if self._phenomenon == "pressure_pa" and val is not None:
                 return round(val / 1000, 1)
+            if self._phenomenon == "aqi" and val is not None:
+                try:
+                    return int(val)
+                except Exception:
+                    return val
             return val
 
     @property
     def extra_state_attributes(self):
         if self._is_phenomenon:
-            data = self._coordinator.data or {}
+            data = self.coordinator.data or {}
             for d in data.get("last_data", []):
                 if d["phenomenon"] == self._phenomenon:
                     return {
@@ -122,7 +162,11 @@ class SaveEcoBotSensor(Entity):
                     }
             return {}
         else:
+            if self._phenomenon == "aqi":
+                data = self.coordinator.data or {}
+                return {
+                    **self._extra_attrs,
+                    "updated_at": data.get("aqi_updated_at"),
+                    "is_old": data.get("aqi_is_old"),
+                }
             return self._extra_attrs
-
-    async def async_update(self):
-        await self._coordinator.async_request_refresh()

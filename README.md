@@ -14,32 +14,57 @@
 
 ## English
 
-Custom integration for monitoring SaveEcoBot air quality stations in Home Assistant. Supports multi-language interface (English, Ukrainian), dynamic sensor creation for all available phenomena, and automatic updates.
+Custom integration for monitoring SaveEcoBot air quality stations in Home Assistant. It supports English and Ukrainian, creates sensors dynamically based on the selected station, and keeps values up to date automatically.
 
 ### Features
-- **Multi-language support**: English, Ukrainian
-- **Dynamic sensors**: All available air quality parameters (AQI, NH3, PM2.5, etc.)
-- **Automatic update**: Update interval configurable (1-60 minutes)
-- **Unique entity IDs**: e.g., `sensor.saveecobot_14634_aqi`
-- **UI configuration**: Configure via Home Assistant UI
-- **Automatic device and sensor naming**: Based on station address
+- **Config flow setup**: add the integration directly from the Home Assistant UI
+- **Localized UI**: English and Ukrainian translations for setup and entities
+- **Dynamic air-quality sensors**: AQI, PM, gases, temperature, humidity, pressure, and other available station data
+- **Stable entity IDs**: for example, `sensor.saveecobot_14634_aqi`
+- **Device grouping**: all entities for the selected station are grouped under one device
+- **Custom Lovelace card**: bundled station overview card with AQI, PM2.5, PM10, temperature, humidity, `updated_at`, and stale-data status
+- **Settings entities inside the device**:
+	- `marker_id` is shown as a read-only value in **Settings**
+	- `update_interval` is available as an editable slider in **Settings**
+- **Automatic polling**: update interval from 1 to 60 minutes
 
 ### Installation
-1. Copy the `custom_components/ha_saveecobot` folder to your Home Assistant `custom_components` directory
+#### Option 1: HACS
+1. Open HACS
+2. Add this repository as a custom integration if needed
+3. Install **SaveEcoBot**
+4. Restart Home Assistant
+
+#### Option 2: Manual installation
+1. Copy the `ha_saveecobot` folder into your Home Assistant configuration directory under:
+	 - `custom_components/ha_saveecobot`
 2. Restart Home Assistant
-3. Go to **Settings → Devices & Services → Add Integration**
-4. Search for "SaveEcoBot"
-5. Enter your station marker ID and select update interval/language
+
+#### Add the integration
+1. Go to **Settings → Devices & Services**
+2. Click **Add Integration**
+3. Search for **SaveEcoBot**
+4. Enter your SaveEcoBot station `marker_id`
+5. Select the update interval
 
 ### Configuration
-- **Marker ID**: Your SaveEcoBot station marker (see https://www.saveecobot.com/)
-- **Update Interval**: How often to fetch data (1-60 minutes)
-- **Language**: Interface language (auto-detected from Home Assistant profile)
+- **Marker ID**: selected when the integration is created
+- **Update Interval**: selected during setup and later editable from the device Settings block
+- **Language**: taken from the Home Assistant user interface language
+
+After setup:
+- `marker_id` is displayed in the device **Settings** block as a read-only value
+- `update_interval` remains available as an editable slider in the same block
+- there is no separate options dialog for routine changes
 
 ### Sensors
-- All available air quality parameters from your station will be created as sensors
-- Example: `sensor.saveecobot_14634_aqi`, `sensor.saveecobot_14634_nh3_ppb`, etc.
-- Each sensor has unique_id and friendly name
+- All supported station phenomena are created automatically from SaveEcoBot data
+- Example entities:
+	- `sensor.saveecobot_14634_aqi`
+	- `sensor.saveecobot_14634_pm25`
+	- `sensor.saveecobot_14634_temperature`
+- Station metadata such as latitude, longitude, type, and similar values are shown as diagnostic entities
+- `AQI` is exposed as a numeric sensor
 
 #### Example UI
 
@@ -47,16 +72,58 @@ Below is an example of how SaveEcoBot sensors appear in the Home Assistant UI:
 
 ![Sensors Example](images/sensors.png)
 
-- Each sensor displays its friendly name, value, and unit (localized)
-- Sensors are grouped by device (station)
-- All available air quality parameters are shown
+- Friendly names and units are localized
+- Entities are grouped under a single SaveEcoBot station device
+- Settings and diagnostic values are separated from the main measurement sensors
 
 _See [translations/uk.json](./ha_saveecobot/translations/uk.json) and [translations/en.json](./ha_saveecobot/translations/en.json) for localization details._
 
+### Custom Lovelace card
+
+The integration includes a bundled Lovelace card that highlights the most important air-quality data with color-coded AQI levels.
+
+#### What it shows
+- AQI
+- PM2.5 / PM10
+- temperature / humidity
+- `updated_at`
+- `is_old` status
+- color accent based on pollution level
+
+#### Add the resource
+After the integration is loaded, add this Lovelace resource:
+
+- URL: `/ha_saveecobot/saveecobot-card.js`
+- Resource type: `JavaScript module`
+
+#### Card example
+
+```yaml
+type: custom:saveecobot-card
+marker_id: 14634
+title: SaveEcoBot
+```
+
+#### Optional entity overrides
+
+If needed, you can override auto-detected entities explicitly:
+
+```yaml
+type: custom:saveecobot-card
+aqi_entity: sensor.saveecobot_14634_aqi
+pm25_entity: sensor.saveecobot_14634_pm25
+pm10_entity: sensor.saveecobot_14634_pm10
+temperature_entity: sensor.saveecobot_14634_temperature
+humidity_entity: sensor.saveecobot_14634_humidity
+title: Kyiv station
+```
+
 ### Troubleshooting
 - Check **Settings → System → Logs** for `ha_saveecobot` entries
-- Ensure your marker ID is correct and the station is online
-- If sensors do not update, check your network and Home Assistant logs
+- Ensure the selected `marker_id` exists on https://www.saveecobot.com/
+- If the integration does not load, verify Internet access from Home Assistant
+- If data does not refresh, check the configured `update_interval` and Home Assistant logs
+- If entity names or IDs look stale after an upgrade, reload the integration or restart Home Assistant
 
 ---
 
@@ -64,32 +131,57 @@ _See [translations/uk.json](./ha_saveecobot/translations/uk.json) and [translati
 
 [English above ⬆️]
 
-Кастомна інтеграція для моніторингу станцій SaveEcoBot у Home Assistant. Підтримує багатомовний інтерфейс (українська, англійська), динамічне створення сенсорів для всіх доступних параметрів якості повітря та автоматичне оновлення.
+Кастомна інтеграція для моніторингу станцій SaveEcoBot у Home Assistant. Підтримує українську та англійську мови, динамічно створює сенсори для вибраної станції та автоматично оновлює дані.
 
 ### Можливості
-- **Багатомовна підтримка**: українська, англійська
-- **Динамічні сенсори**: всі доступні параметри якості повітря (AQI, NH3, PM2.5 тощо)
-- **Автоматичне оновлення**: інтервал оновлення налаштовується (1-60 хвилин)
-- **Унікальні entity_id**: наприклад, `sensor.saveecobot_14634_aqi`
-- **Налаштування через UI**: інтеграція налаштовується через інтерфейс Home Assistant
-- **Автоматичне іменування пристрою та сенсорів**: за адресою станції
+- **Налаштування через config flow**: додавання інтеграції напряму з інтерфейсу Home Assistant
+- **Локалізований інтерфейс**: українська та англійська для налаштування й назв сутностей
+- **Динамічні сенсори якості повітря**: AQI, пил, гази, температура, вологість, тиск та інші доступні показники
+- **Стабільні entity_id**: наприклад, `sensor.saveecobot_14634_aqi`
+- **Групування за пристроєм**: усі сутності станції зібрані під одним пристроєм
+- **Кастомна Lovelace-картка**: оглядова картка станції з AQI, PM2.5, PM10, температурою, вологістю, `updated_at` та статусом застарілих даних
+- **Сутності налаштувань у блоці `Налаштування`**:
+	- `marker_id` показується як текстове значення без редагування
+	- `update_interval` доступний для зміни через повзунок
+- **Автоматичне опитування**: інтервал від 1 до 60 хвилин
 
 ### Встановлення
-1. Скопіюйте папку `custom_components/ha_saveecobot` у директорію `custom_components` вашого Home Assistant
+#### Варіант 1: через HACS
+1. Відкрийте HACS
+2. Додайте цей репозиторій як кастомну інтеграцію, якщо потрібно
+3. Встановіть **SaveEcoBot**
+4. Перезапустіть Home Assistant
+
+#### Варіант 2: вручну
+1. Скопіюйте папку `ha_saveecobot` у директорію конфігурації Home Assistant за шляхом:
+	 - `custom_components/ha_saveecobot`
 2. Перезапустіть Home Assistant
-3. Перейдіть у **Налаштування → Пристрої та служби → Додати інтеграцію**
-4. Знайдіть "SaveEcoBot"
-5. Введіть marker ID станції, оберіть інтервал оновлення та мову
+
+#### Додавання інтеграції
+1. Перейдіть у **Налаштування → Пристрої та служби**
+2. Натисніть **Додати інтеграцію**
+3. Знайдіть **SaveEcoBot**
+4. Введіть `marker_id` вашої станції SaveEcoBot
+5. Оберіть інтервал оновлення
 
 ### Налаштування
-- **Marker ID**: marker вашої станції SaveEcoBot (див. https://www.saveecobot.com/)
-- **Інтервал оновлення**: як часто оновлювати дані (1-60 хвилин)
-- **Мова**: мова інтерфейсу (автоматично визначається з профілю Home Assistant)
+- **Marker ID**: задається під час створення інтеграції
+- **Інтервал оновлення**: задається під час створення та потім може змінюватися у блоці налаштувань пристрою
+- **Мова**: береться з мови інтерфейсу Home Assistant
+
+Після створення інтеграції:
+- `marker_id` відображається в блоці **Налаштування** як значення лише для перегляду
+- `update_interval` залишається доступним для редагування повзунком у тому ж блоці
+- окреме вікно опцій для щоденних змін не використовується
 
 ### Сенсори
-Для всіх доступних параметрів якості повітря будуть створені сенсори
-Приклад: `sensor.saveecobot_14634_aqi`, `sensor.saveecobot_14634_nh3_ppb` тощо
-Кожен сенсор має унікальний ID та дружню назву
+- Для всіх підтримуваних параметрів станції сенсори створюються автоматично
+- Приклади сутностей:
+	- `sensor.saveecobot_14634_aqi`
+	- `sensor.saveecobot_14634_pm25`
+	- `sensor.saveecobot_14634_temperature`
+- Метадані станції, як-от широта, довгота, тип та подібні значення, відображаються як діагностичні сутності
+- `AQI` експортується як числовий сенсор
 
 #### Приклад інтерфейсу
 
@@ -97,16 +189,58 @@ _See [translations/uk.json](./ha_saveecobot/translations/uk.json) and [translati
 
 ![Sensors Example](images/sensors.png)
 
-- Кожен сенсор відображає дружню назву, значення та одиницю вимірювання (локалізовано)
-- Сенсори згруповані за пристроєм (станцією)
-- Відображаються всі доступні параметри якості повітря
+- Назви та одиниці вимірювання локалізовані
+- Усі сутності станції згруповані під одним пристроєм SaveEcoBot
+- Основні вимірювання відокремлені від діагностичних і конфігураційних значень
 
 _Деталі локалізації дивіться у [translations/uk.json](./ha_saveecobot/translations/uk.json) та [translations/en.json](./ha_saveecobot/translations/en.json)._ 
 
+### Кастомна Lovelace-картка
+
+Інтеграція містить вбудовану Lovelace-картку, яка показує головні показники якості повітря з кольоровою індикацією рівня забруднення.
+
+#### Що відображається
+- AQI
+- PM2.5 / PM10
+- температура / вологість
+- `updated_at`
+- статус `is_old`
+- кольоровий акцент залежно від рівня забруднення
+
+#### Додавання ресурсу
+Після завантаження інтеграції додайте ресурс Lovelace:
+
+- URL: `/ha_saveecobot/saveecobot-card.js`
+- Тип ресурсу: `JavaScript module`
+
+#### Приклад картки
+
+```yaml
+type: custom:saveecobot-card
+marker_id: 14634
+title: SaveEcoBot
+```
+
+#### Необов'язкові явні сутності
+
+За потреби можна явно вказати сутності замість автопошуку:
+
+```yaml
+type: custom:saveecobot-card
+aqi_entity: sensor.saveecobot_14634_aqi
+pm25_entity: sensor.saveecobot_14634_pm25
+pm10_entity: sensor.saveecobot_14634_pm10
+temperature_entity: sensor.saveecobot_14634_temperature
+humidity_entity: sensor.saveecobot_14634_humidity
+title: Київська станція
+```
+
 ### Усунення несправностей
 - Перевірте **Налаштування → Система → Логи** на наявність записів `ha_saveecobot`
-- Переконайтеся, що marker ID вірний, а станція онлайн
-- Якщо сенсори не оновлюються, перевірте мережу та логи Home Assistant
+- Переконайтеся, що вибраний `marker_id` існує на https://www.saveecobot.com/
+- Якщо інтеграція не завантажується, перевірте доступ Home Assistant до Інтернету
+- Якщо дані не оновлюються, перевірте налаштований `update_interval` і логи Home Assistant
+- Якщо після оновлення назви або ключі сутностей виглядають застарілими, перезавантажте інтеграцію або Home Assistant
 
 ---
 

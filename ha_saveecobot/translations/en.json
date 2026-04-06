@@ -35,7 +35,15 @@
 		}
 	},
 	"entity": {
+		"number": {
+			"update_interval": {
+				"name": "Update interval (min)"
+			}
+		},
 		"sensor": {
+			"marker_id": {
+				"name": "Monitoring Station ID"
+			},
 			"aqi": {
 				"name": "Air Quality Index",
 				"state": {

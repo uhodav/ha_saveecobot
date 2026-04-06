@@ -20,7 +20,7 @@ PHENOMENON_UNITS = {
     "gamma": "nSv/h",
     "temperature": "°C",
     "humidity": "%",
-    "pressure_pa": "Pa",
+    "pressure_pa": "hPa",
     # Main sensors (if any units needed)
     "longitude": None,
     "latitude": None,

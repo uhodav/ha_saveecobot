@@ -39,7 +39,7 @@ Custom integration for monitoring SaveEcoBot air quality stations in Home Assist
 4. Restart Home Assistant
 
 #### Option 2: Manual installation
-1. Copy the `ha_saveecobot` folder into your Home Assistant configuration directory under:
+1. Copy the `custom_components/ha_saveecobot` folder into your Home Assistant configuration directory under:
 	 - `custom_components/ha_saveecobot`
 2. Restart Home Assistant
 
@@ -62,8 +62,8 @@ Custom integration for monitoring SaveEcoBot air quality stations in Home Assist
 
 The setup wizard uses prebuilt dictionaries stored in:
 
-- `ha_saveecobot/translations/en/*.json`
-- `ha_saveecobot/translations/uk/*.json`
+- `custom_components/ha_saveecobot/translations/en/*.json`
+- `custom_components/ha_saveecobot/translations/uk/*.json`
 
 To refresh dictionaries from SaveEcoBot APIs, run:
 
@@ -97,7 +97,7 @@ Below is an example of how SaveEcoBot sensors appear in the Home Assistant UI:
 - Entities are grouped under a single SaveEcoBot station device
 - Settings and diagnostic values are separated from the main measurement sensors
 
-_See [translations/uk.json](./ha_saveecobot/translations/uk.json) and [translations/en.json](./ha_saveecobot/translations/en.json) for localization details._
+_See [translations/uk.json](./custom_components/ha_saveecobot/translations/uk.json) and [translations/en.json](./custom_components/ha_saveecobot/translations/en.json) for localization details._
 
 ### Custom Lovelace card
 
@@ -179,7 +179,7 @@ title: Kyiv station
 4. Перезапустіть Home Assistant
 
 #### Варіант 2: вручну
-1. Скопіюйте папку `ha_saveecobot` у директорію конфігурації Home Assistant за шляхом:
+1. Скопіюйте папку `custom_components/ha_saveecobot` у директорію конфігурації Home Assistant за шляхом:
 	 - `custom_components/ha_saveecobot`
 2. Перезапустіть Home Assistant
 
@@ -202,8 +202,8 @@ title: Kyiv station
 
 Майстер налаштування використовує попередньо згенеровані довідники у:
 
-- `ha_saveecobot/translations/en/*.json`
-- `ha_saveecobot/translations/uk/*.json`
+- `custom_components/ha_saveecobot/translations/en/*.json`
+- `custom_components/ha_saveecobot/translations/uk/*.json`
 
 Щоб оновити довідники з API SaveEcoBot, запустіть:
 
@@ -237,7 +237,7 @@ title: Kyiv station
 - Усі сутності станції згруповані під одним пристроєм SaveEcoBot
 - Основні вимірювання відокремлені від діагностичних і конфігураційних значень
 
-_Деталі локалізації дивіться у [translations/uk.json](./ha_saveecobot/translations/uk.json) та [translations/en.json](./ha_saveecobot/translations/en.json)._ 
+_Деталі локалізації дивіться у [translations/uk.json](./custom_components/ha_saveecobot/translations/uk.json) та [translations/en.json](./custom_components/ha_saveecobot/translations/en.json)._ 
 
 ### Кастомна Lovelace-картка
 

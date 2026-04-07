@@ -8,7 +8,7 @@ $requestConcurrency = 20
 $requestTimeoutSec = 30
 $backfillRelationsWithoutApi = $true
 
-$translationsRootDir = Join-Path $PSScriptRoot '..\ha_saveecobot\translations'
+$translationsRootDir = Join-Path $PSScriptRoot '..\custom_components\ha_saveecobot\translations'
 
 function Get-NormalizedLanguageCode {
     param([string]$Language)

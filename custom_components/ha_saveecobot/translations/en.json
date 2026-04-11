@@ -4,8 +4,7 @@
 		"step": {
 			"user": {
 				"title": "Step 1/4: Select Region",
-				"description": "Select a region from the list. You can verify station availability on the SaveEcoBot map: {map_url}",
-				"map_url": "https://www.saveecobot.com/en/maps",
+				"description": "Select a region from the list. You can verify station availability on the SaveEcoBot map: www.saveecobot.com/en/maps",
         "data": {
           "region_id": "Region"
         }

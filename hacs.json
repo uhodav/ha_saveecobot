@@ -1,7 +1,7 @@
 {
-  "name": "SaveEcobot",
+  "name": "SaveEcoBot",
   "content_in_root": false,
-  "url": "https://github.com/uhodav/ha_saveecobot",
-  "render_readme": true,
-  "country": ["UA"]
+  "domains": ["sensor", "binary_sensor", "button", "number"],
+  "country": "UA",
+  "homeassistant": "2023.0.0"
 }

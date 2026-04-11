@@ -8,9 +8,15 @@
 
 # SaveEcoBot Integration for Home Assistant
 
+## Links
+
+- [Add this repository to HACS](https://my.home-assistant.io/redirect/hacs_repository/?owner=uhodav&repository=ha_saveecobot&category=integration)
+
+---
+
 [Українською нижче ⬇️]
 
-[![Add to HACS](https://img.shields.io/badge/HACS-Add%20This%20Integration-blue?logo=home-assistant&style=for-the-badge)](https://my.home-assistant.io/redirect/hacs_repository/?owner=uhodav&repository=ha-saveecobot&category=integration)
+[![Add to HACS](https://img.shields.io/badge/HACS-Add%20This%20Integration-blue?logo=home-assistant&style=for-the-badge)](https://my.home-assistant.io/redirect/hacs_repository/?owner=uhodav&repository=ha_saveecobot&category=integration)
 
 ## English
 
